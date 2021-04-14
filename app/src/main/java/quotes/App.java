@@ -3,21 +3,115 @@
  */
 package quotes;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class App {
     public static void main(String[] args) throws FileNotFoundException {
-        Gson gson = new Gson();
-        Reader reader = new FileReader("./app/src/main/resources/recentquotes.json");
-        Quotes []convertedObject = gson.fromJson(reader, Quotes[].class);
-        Random rand =new Random();
-        int ranNum=rand.nextInt((convertedObject.length)+1);
-        System.out.println(gson.toJson(convertedObject[ranNum]));
+
+//        Gson gson = new Gson();
+//        Reader reader = new FileReader("./app/src/main/resources/recentquotes.json");
+//        QuotesNoNet []convertedObject = gson.fromJson(reader, QuotesNoNet[].class);
+//        Random rand =new Random();
+//        int ranNum=rand.nextInt((convertedObject.length)+1);
+//        System.out.println(gson.toJson(convertedObject[ranNum]));
+
+
+
+        String apiURL = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
+
+        try {
+            URL url = new URL(apiURL);
+            String jsonData = getJsonFromAPI(url);
+            Quotes quotes = getQuotesAsObject(jsonData);
+//            writeToFile("./app/src/main/resources/recentquotes.json",quotes);
+            System.out.println(quotes);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
+        public static void writeToFile(String filepath, Quotes quote) throws Exception
+        {
+            Gson gson = new Gson();
+            BufferedReader file = new BufferedReader(new FileReader(filepath));
+            TypeToken<ArrayList<Quotes>> token = new TypeToken<ArrayList<Quotes>>(){};
+            ArrayList<Quotes> quotesFromFiles = gson.fromJson(file, token.getType());
+            quotesFromFiles.add(quote);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));
+            writer.write(gson.toJson(quotesFromFiles));
+            writer.close();
+            file.close();
+        }
+
+    public static QuotesNoNet NoNet()throws FileNotFoundException {
+        Gson gson = new Gson();
+        Reader reader = new FileReader("./app/src/main/resources/recentquotes.json");
+        QuotesNoNet []convertedObject = gson.fromJson(reader, QuotesNoNet[].class);
+        Random rand =new Random();
+        int ranNum=rand.nextInt((convertedObject.length)+1);
+//        System.out.println(gson.toJson(convertedObject[ranNum]));
+        return convertedObject[ranNum];
+    }
+
+    public static String getJsonFromAPI(URL url) throws IOException {
+
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int status = connection.getResponseCode();
+//        status=500;
+        String content = "";
+        if(status == 200) {
+            BufferedReader reader = getBufferedReader(connection);
+            content = getContent(reader);
+            reader.close();
+        } else{
+            System.out.println(NoNet());
+        }
+
+        connection.disconnect();
+
+        return content;
+    }
+
+
+    private static Quotes getQuotesAsObject(String jsonData) {
+        Gson gson = new Gson();
+        Quotes quotes = gson.fromJson(jsonData, Quotes.class);
+        return quotes;
+    }
+
+    private static String getContent(BufferedReader reader) throws IOException {    //String vs StringBuilder
+        StringBuilder builder = new StringBuilder();
+        String currentLine = reader.readLine();
+
+        while(currentLine != null){
+            builder.append(currentLine);
+            currentLine = reader.readLine();
+        }
+        return builder.toString();
+    }
+    private static BufferedReader getBufferedReader(HttpURLConnection connection) throws IOException {
+        InputStream inputStream = connection.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        return new BufferedReader(inputStreamReader);
+    }
+
+
+
+
 }

@@ -13,7 +13,7 @@ public class AppTest {
         try {
             assertEquals("Method should return the targeted quote and author from the test file.",
                     "Quotes{author='Marilyn Monroe', text='I am good, but not an angel. I do sin, but I am not the devil. I am just a small girl in a big world trying to find someone to love.', tags=[attributed-no-source], likes='18651 likes'}",
-                    Quotes.readFromFile(testFile_ReadFromPath));
+                    QuotesNoNet.readFromFile(testFile_ReadFromPath));
         } catch(Exception error){fail();}
     }
 

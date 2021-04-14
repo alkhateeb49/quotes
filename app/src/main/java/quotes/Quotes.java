@@ -7,31 +7,16 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class Quotes {
-    String author;
-    String text;
-    ArrayList<String> tags = new ArrayList<>();
-    String likes;
-
-    public static String readFromFile(String path) throws Exception
-    {
-        Gson gson = new Gson();
-
-        BufferedReader file = new BufferedReader(new FileReader(path));
-        Quotes[] quotesFromFiles = gson.fromJson(file, Quotes[].class);
-
-        int randomIndex = (int)(Math.random() * quotesFromFiles.length);
-        String randomQuote = quotesFromFiles[randomIndex].toString();
-
-        return randomQuote;
-    }
+    String quoteText;
+    String quoteAuthor;
+    String quoteLink;
 
     @Override
     public String toString() {
         return "Quotes{" +
-                "author='" + author + '\'' +
-                ", text='" + text + '\'' +
-                ", tags=" + tags +
-                ", likes='" + likes + '\'' +
+                "quoteText='" + quoteText + '\'' +
+                ", quoteAuthor='" + quoteAuthor + '\'' +
+                ", quoteLink='" + quoteLink + '\'' +
                 '}';
     }
 
