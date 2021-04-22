@@ -3,7 +3,15 @@
  */
 package quotes;
 
+import com.google.gson.Gson;
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URL;
+
 import static org.junit.Assert.*;
 
 public class AppTest {
@@ -13,8 +21,28 @@ public class AppTest {
         try {
             assertEquals("Method should return the targeted quote and author from the test file.",
                     "Quotes{author='Marilyn Monroe', text='I am good, but not an angel. I do sin, but I am not the devil. I am just a small girl in a big world trying to find someone to love.', tags=[attributed-no-source], likes='18651 likes'}",
-                    QuotesNoNet.readFromFile(testFile_ReadFromPath));
+                    App.readFromFile(testFile_ReadFromPath));
         } catch(Exception error){fail();}
     }
+
+
+    @Test
+    public void testGetRandomQuote() throws FileNotFoundException {
+        Gson gson = new Gson();
+        Reader reader = new FileReader("../app/src/main/resources/recentquotes.json");
+        QuotesNoNetwork[]convertedObject = gson.fromJson(reader, QuotesNoNetwork[].class);
+        assertEquals("The output is: ",convertedObject[0],convertedObject[0]);
+    }
+
+
+    @Test
+    public void getJsonFromAPI() throws IOException {
+        String apiURL = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
+        URL url = new URL(apiURL);
+        assertEquals("The output is: ",App.getJsonFromAPI(url),App.getJsonFromAPI(url));
+
+    }
+
+
 
 }

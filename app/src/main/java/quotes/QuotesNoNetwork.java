@@ -6,24 +6,24 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class QuotesNoNet {
+public class QuotesNoNetwork {
     String author;
     String text;
     ArrayList<String> tags = new ArrayList<>();
     String likes;
 
-    public static String readFromFile(String path) throws Exception
-    {
-        Gson gson = new Gson();
-
-        BufferedReader file = new BufferedReader(new FileReader(path));
-        QuotesNoNet[] quotesFromFiles = gson.fromJson(file, QuotesNoNet[].class);
-
-        int randomIndex = (int)(Math.random() * quotesFromFiles.length);
-        String randomQuote = quotesFromFiles[randomIndex].toString();
-
-        return randomQuote;
-    }
+//    public static String readFromFile(String path) throws Exception
+//    {
+//        Gson gson = new Gson();
+//
+//        BufferedReader file = new BufferedReader(new FileReader(path));
+//        QuotesNoNet[] quotesFromFiles = gson.fromJson(file, QuotesNoNet[].class);
+//
+//        int randomIndex = (int)(Math.random() * quotesFromFiles.length);
+//        String randomQuote = quotesFromFiles[randomIndex].toString();
+//
+//        return randomQuote;
+//    }
 
     @Override
     public String toString() {

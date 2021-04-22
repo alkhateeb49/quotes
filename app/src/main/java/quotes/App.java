@@ -24,7 +24,6 @@ public class App {
 //        System.out.println(gson.toJson(convertedObject[ranNum]));
 
 
-
         String apiURL = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
 
         try {
@@ -57,10 +56,10 @@ public class App {
             file.close();
         }
 
-    public static QuotesNoNet NoNet()throws FileNotFoundException {
+    public static QuotesNoNetwork NoNetwork()throws FileNotFoundException {
         Gson gson = new Gson();
         Reader reader = new FileReader("./app/src/main/resources/recentquotes.json");
-        QuotesNoNet []convertedObject = gson.fromJson(reader, QuotesNoNet[].class);
+        QuotesNoNetwork[]convertedObject = gson.fromJson(reader, QuotesNoNetwork[].class);
         Random rand =new Random();
         int ranNum=rand.nextInt((convertedObject.length)+1);
 //        System.out.println(gson.toJson(convertedObject[ranNum]));
@@ -73,6 +72,7 @@ public class App {
         connection.setRequestMethod("GET");
 
         int status = connection.getResponseCode();
+//        Uncomment this line to Test if the app has errors in connecting to the Internet, It's display a random quote from local file.
 //        status=500;
         String content = "";
         if(status == 200) {
@@ -80,7 +80,7 @@ public class App {
             content = getContent(reader);
             reader.close();
         } else{
-            System.out.println(NoNet());
+            System.out.println(NoNetwork());
         }
 
         connection.disconnect();
@@ -89,7 +89,7 @@ public class App {
     }
 
 
-    private static Quotes getQuotesAsObject(String jsonData) {
+     static Quotes getQuotesAsObject(String jsonData) {
         Gson gson = new Gson();
         Quotes quotes = gson.fromJson(jsonData, Quotes.class);
         return quotes;
@@ -109,6 +109,20 @@ public class App {
         InputStream inputStream = connection.getInputStream();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         return new BufferedReader(inputStreamReader);
+    }
+
+
+    public static String readFromFile(String path) throws Exception
+    {
+        Gson gson = new Gson();
+
+        BufferedReader file = new BufferedReader(new FileReader(path));
+        QuotesNoNetwork[] quotesFromFiles = gson.fromJson(file, QuotesNoNetwork[].class);
+
+        int randomIndex = (int)(Math.random() * quotesFromFiles.length);
+        String randomQuote = quotesFromFiles[randomIndex].toString();
+
+        return randomQuote;
     }
 
 
